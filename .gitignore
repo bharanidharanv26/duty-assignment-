@@ -1,0 +1,11 @@
+node_modules
+supabase/.temp
+dist
+dist-ssr
+*.local
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
