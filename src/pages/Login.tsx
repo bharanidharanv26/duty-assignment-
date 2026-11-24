@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react"
 import { Navigate, useLocation, useNavigate } from "react-router-dom"
 import { CalendarDays, Loader2, LockKeyhole } from "lucide-react"
+import { CreatorCredit } from "@/components/CreatorCredit"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -104,6 +105,10 @@ export function LoginPage() {
         <p className="text-center text-xs text-muted-foreground">
           Only the administrator can use this app. There is no public registration.
         </p>
+
+        <footer className="border-t pt-4">
+          <CreatorCredit />
+        </footer>
       </div>
     </div>
   )

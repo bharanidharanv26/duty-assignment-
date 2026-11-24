@@ -9,6 +9,7 @@ import {
   useNavigate,
 } from "react-router-dom"
 import { toast } from "sonner"
+import { CreatorCredit } from "@/components/CreatorCredit"
 import { SetupNotice } from "@/components/SetupNotice"
 import { Toaster } from "@/components/ui/sonner"
 import { Button } from "@/components/ui/button"
@@ -67,7 +68,7 @@ function AppLayout() {
   }
 
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="flex min-h-dvh flex-col bg-background">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4">
           <div className="flex items-center gap-2.5">
@@ -114,9 +115,15 @@ function AppLayout() {
         </nav>
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 py-5 pb-24 sm:py-7 sm:pb-10">
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5 sm:py-7">
         <Outlet />
       </main>
+
+      <footer className="mx-auto w-full max-w-5xl px-4 pb-24 sm:pb-6">
+        <div className="border-t pt-4">
+          <CreatorCredit />
+        </div>
+      </footer>
     </div>
   )
 }
