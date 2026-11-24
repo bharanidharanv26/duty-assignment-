@@ -1,6 +1,7 @@
 import { formatFullDate } from "./date"
 import {
   DUTY_TYPES,
+  HOSPITAL_DUTY_LABEL,
   STAFF_STATUSES,
   getDutyLabel,
   getStatusLabel,
@@ -211,6 +212,7 @@ const DEFAULT_LABELS: ValidationLabels = {
     "11am": "11 AM duty",
     gerugambakkam: "Gerugambakkam duty",
     night: "Night duty",
+    hospital: HOSPITAL_DUTY_LABEL,
   },
   leave: "Leave",
   compOff: "Comp Off",
@@ -271,6 +273,8 @@ export function validateAssignments(
   }
 
   for (const duty of DUTY_TYPES) {
+    // Hospital duty can be shared by any number of staff.
+    if (duty === "hospital") continue
     const holders = assignments.filter((entry) => entry.duty === duty)
     if (holders.length > 1) {
       issues.push({

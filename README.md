@@ -162,8 +162,8 @@ saved day, loaded as assignments only) and **Today**.
 
 ### Rules enforced before generating or saving
 
-1. At most one person on each special duty (7 AM, 11:30 AM, Gerugambakkam, Night
-   Duty).
+1. At most one person on each of these special duties: 7 AM, 11:30 AM,
+   Gerugambakkam and Night Duty. **Hospital Duty can be assigned to multiple people.**
 2. A block can belong to only one person per day.
 3. One person can have multiple blocks.
 4. Leave cannot be combined with any duty or block.
@@ -247,7 +247,7 @@ snapshots:
 ```
 
 `status` is `working`, `leave`, `comp_off` or `weekly_off`; `duty` is `7am`, `11am`,
-`gerugambakkam`, `night` or `null`. Because names are snapshotted, history is unaffected
+`gerugambakkam`, `night`, `hospital` or `null`. Because names are snapshotted, history is unaffected
 by later renames. `daily_schedules.schedule_date` is unique, and the app upserts, so a
 date can never have two schedules.
 
@@ -314,7 +314,7 @@ supabase db push
 | `npm run dev`     | Start the development server              |
 | `npm run build`   | Typecheck and build to `dist`             |
 | `npm run preview` | Preview the production build              |
-| `npm run test`    | Run the Vitest suite (14 tests)           |
+| `npm run test`    | Run the Vitest suite                      |
 | `npm run typecheck` | TypeScript check only                   |
 
 ---

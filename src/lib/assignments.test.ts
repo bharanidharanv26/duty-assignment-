@@ -4,6 +4,7 @@ import {
   availableBlocksForAssignment,
   buildAssignments,
   generateScheduleMessage,
+  parseAssignments,
   snapshotBlock,
   toggleBlock,
   validateAssignments,
@@ -115,15 +116,53 @@ describe("validateAssignments", () => {
     expect(validateAssignments(schedule)).toEqual([])
   })
 
-  it("reports a duty assigned to two people", () => {
-    const schedule = validSchedule().map((entry) =>
-      entry.staff_id === people.ester.id ? { ...entry, duty: "11am" as const } : entry,
-    )
-    const issue = validateAssignments(schedule).find(
-      (entry) => entry.code === "duplicate-duty-11am",
-    )
-    expect(issue?.message).toContain("Sis. Deepa")
-    expect(issue?.message).toContain("Sis. Ester")
+  it.each(["7am", "11am", "gerugambakkam", "night"] as const)(
+    "reports %s duty assigned to two people",
+    (duty) => {
+      const schedule = [
+        assignment(people.deepa, { duty }),
+        assignment(people.ester, { duty }),
+      ]
+      const issue = validateAssignments(schedule).find(
+        (entry) => entry.code === `duplicate-duty-${duty}`,
+      )
+      expect(issue?.message).toContain("Sis. Deepa")
+      expect(issue?.message).toContain("Sis. Ester")
+    },
+  )
+
+  it("allows Hospital Duty for multiple people, including alongside blocks", () => {
+    const schedule = [
+      assignment(people.deepa, { duty: "hospital" }),
+      assignment(people.ester, { duty: "hospital" }),
+      assignment(people.uma, {
+        duty: "hospital",
+        blocks: [snapshotBlock(blockList.phone)],
+      }),
+    ]
+    expect(validateAssignments(schedule)).toEqual([])
+  })
+
+  it("still enforces block and time-off conflicts for Hospital Duty", () => {
+    const schedule = [
+      assignment(people.deepa, {
+        duty: "hospital",
+        blocks: [snapshotBlock(blockList.phone)],
+      }),
+      assignment(people.ester, {
+        duty: "hospital",
+        blocks: [snapshotBlock(blockList.phone)],
+      }),
+      assignment(people.uma, { duty: "hospital", status: "leave" }),
+      assignment(people.jeeva, { duty: "hospital", status: "comp_off" }),
+      assignment(people.shantha, { duty: "hospital", status: "weekly_off" }),
+    ]
+    expect(validateAssignments(schedule).map((issue) => issue.code)).toEqual([
+      "leave-conflict",
+      "comp-off-conflict",
+      "weekly-off-conflict",
+      "duplicate-block",
+    ])
   })
 
   it("reports a block assigned to two people", () => {
@@ -157,6 +196,25 @@ describe("validateAssignments", () => {
 })
 
 describe("assignment helpers", () => {
+  it("keeps shared Hospital Duty when loading or copying a saved schedule", () => {
+    const saved = [
+      assignment(people.deepa, { duty: "hospital" }),
+      assignment(people.ester, {
+        duty: "hospital",
+        blocks: [snapshotBlock(blockList.phone)],
+      }),
+    ]
+    const parsed = parseAssignments(JSON.parse(JSON.stringify(saved)))
+    expect(parsed).toEqual(saved)
+    expect(
+      buildAssignments({
+        staff: [people.deepa, people.ester],
+        blocks: [blockList.phone],
+        saved: parsed,
+      }),
+    ).toEqual(saved)
+  })
+
   it("clears duties and blocks when Leave, Comp Off or Weekly Off is chosen", () => {
     const working = assignment(people.uma, {
       duty: "7am",
@@ -246,6 +304,19 @@ describe("assignment helpers", () => {
 })
 
 describe("generateScheduleMessage", () => {
+  it("includes every person assigned to Hospital Duty and their blocks", () => {
+    const schedule = [
+      assignment(people.deepa, { duty: "hospital" }),
+      assignment(people.ester, {
+        duty: "hospital",
+        blocks: [snapshotBlock(blockList.phone)],
+      }),
+    ]
+    expect(
+      generateScheduleMessage(schedule, settings({ message_heading: "" }), DATE),
+    ).toBe("Sis. Deepa – Hospital Duty\nSis. Ester – Hospital Duty, Phone Block")
+  })
+
   it("builds the WhatsApp message from the real assignments", () => {
     const message = generateScheduleMessage(validSchedule(), settings(), DATE)
     expect(message).toBe(

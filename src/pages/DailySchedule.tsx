@@ -51,6 +51,7 @@ import {
 } from "@/lib/date"
 import {
   DEFAULT_APP_SETTINGS,
+  HOSPITAL_DUTY_LABEL,
   defaultDutyLabels,
   type AppSettings,
   type DailySchedule,
@@ -122,6 +123,7 @@ export function DailySchedulePage() {
         "11am": settings.duty_11am_label,
         gerugambakkam: settings.gerugambakkam_label,
         night: settings.night_duty_label,
+        hospital: HOSPITAL_DUTY_LABEL,
       },
       leave: settings.leave_label,
       compOff: settings.comp_off_label,

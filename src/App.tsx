@@ -79,8 +79,10 @@ function AppLayout() {
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="hidden max-w-48 truncate text-xs text-muted-foreground sm:inline">
-              {session.user.email}
+            <span className="hidden max-w-64 truncate text-xs text-muted-foreground sm:inline">
+              {session.user.email === "uma@duty.local"
+                ? "bharanidharanv26@gmail.com"
+                : session.user.email}
             </span>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut />

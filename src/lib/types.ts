@@ -1,7 +1,9 @@
 export type BlockJoiner = "and" | "comma" | "slash"
 
-export const DUTY_TYPES = ["7am", "11am", "gerugambakkam", "night"] as const
+export const DUTY_TYPES = ["7am", "11am", "gerugambakkam", "night", "hospital"] as const
 export type DutyType = (typeof DUTY_TYPES)[number]
+
+export const HOSPITAL_DUTY_LABEL = "Hospital Duty"
 
 export const STAFF_STATUSES = ["working", "leave", "comp_off", "weekly_off"] as const
 export type StaffStatus = (typeof STAFF_STATUSES)[number]
@@ -100,6 +102,8 @@ export function getDutyLabel(settings: AppSettings, duty: DutyType): string {
       return settings.gerugambakkam_label
     case "night":
       return settings.night_duty_label
+    case "hospital":
+      return HOSPITAL_DUTY_LABEL
   }
 }
 
@@ -122,5 +126,6 @@ export function defaultDutyLabels(): Record<DutyType, string> {
     "11am": DEFAULT_SETTINGS.duty_11am_label,
     gerugambakkam: DEFAULT_SETTINGS.gerugambakkam_label,
     night: DEFAULT_SETTINGS.night_duty_label,
+    hospital: HOSPITAL_DUTY_LABEL,
   }
 }
